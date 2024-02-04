@@ -86,7 +86,7 @@ namespace Administrator.Commands.Server_Commands.Support_System
                 };
                 await ctx.Channel.DeleteAsync();
 
-                var LogChannel = ctx.Guild.GetChannel(1188947815569817683);
+                var LogChannel = ctx.Guild.GetChannel(Program.reader.logChannelID);
                 await LogChannel.SendMessageAsync(logMessage);
             }
         }

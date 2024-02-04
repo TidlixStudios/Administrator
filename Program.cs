@@ -98,9 +98,9 @@ namespace Administrator
 
                 if (Sup_Ticket_Topic != null && Sup_Ticket_Description != null)
                 {
-                    DiscordChannel SupportCategorie = args.Interaction.Guild.GetChannel(1202942130117415005);
+                    DiscordChannel SupportCategorie = args.Interaction.Guild.GetChannel(reader.supportCategorieID);
                     DiscordMember member = (DiscordMember)args.Interaction.User;
-                    DiscordRole teamRole = args.Interaction.Guild.GetRole(1188943560813322351);
+                    DiscordRole teamRole = args.Interaction.Guild.GetRole(reader.teamRoleID);
 
                     var TicketChannel = await args.Interaction.Guild.CreateChannelAsync(
                         name: $"{member.Username}'s Ticket!",
@@ -154,8 +154,8 @@ namespace Administrator
                 var Verification = new Verify();
                 await Verification.SendCode(member, args.Channel);
 
-                var userRole = args.Guild.GetRole(1188945889050505348);
-                var Channel = args.Guild.GetChannel(1201115683895914536);
+                var userRole = args.Guild.GetRole(reader.memberRoleID);
+                var Channel = args.Guild.GetChannel(reader.verifyBotChannelID);
 
                 bool gotCode = false;
                 DateTime time = DateTime.Now.AddMinutes(5);

@@ -1,4 +1,15 @@
 ﻿{
+  // General
   "token": "Token",
-  "verifyChannelID": "ChannelID"
+
+  // Channels
+  "verifyChannelID": "ChannelID",
+  "verifyBotChannelID": "ChannelID",
+  "logChannelID": "ChannelID",
+
+  "supportCategorieID": "CategorieID",
+
+  // Roles
+  "teamRoleID": "RoleID",
+  "memberRoleID": "RoleID"
 }

@@ -47,7 +47,7 @@ namespace Administrator.Commands
                 $"Gebannt von: {ctx.User.Mention}\n",
                 Color = DiscordColor.Red
             };
-            DiscordChannel LogChannel = ctx.Guild.GetChannel(1188947815569817683);
+            DiscordChannel LogChannel = ctx.Guild.GetChannel(Program.reader.logChannelID);
             await LogChannel.SendMessageAsync(LogMessage);
         }
 
@@ -124,7 +124,7 @@ namespace Administrator.Commands
                 $"Entbannt von: {ctx.User.Mention}\n",
                 Color = DiscordColor.Azure
             };
-            DiscordChannel LogChannel = ctx.Guild.GetChannel(1188947815569817683);
+            DiscordChannel LogChannel = ctx.Guild.GetChannel(Program.reader.logChannelID);
             await LogChannel.SendMessageAsync(LogMessage);
         }
         // ----------  BAN SYSTEM  ----------
@@ -165,7 +165,7 @@ namespace Administrator.Commands
                 $"Gekickt von: {ctx.User.Mention}\n",
                 Color = DiscordColor.Red
             };
-            DiscordChannel LogChannel = ctx.Guild.GetChannel(1188947815569817683);
+            DiscordChannel LogChannel = ctx.Guild.GetChannel(Program.reader.logChannelID);
             await LogChannel.SendMessageAsync(LogMessage);
         }
         // ----------  KICK SYSTEM ----------
@@ -207,7 +207,7 @@ namespace Administrator.Commands
                 $"Gemutet von: {ctx.User.Mention}\n",
                 Color = DiscordColor.Red
             };
-            DiscordChannel LogChannel = ctx.Guild.GetChannel(1188947815569817683);
+            DiscordChannel LogChannel = ctx.Guild.GetChannel(Program.reader.logChannelID);
             await LogChannel.SendMessageAsync(LogMessage);
         }
 
@@ -275,7 +275,7 @@ namespace Administrator.Commands
                 Color = DiscordColor.Azure
             };
 
-            DiscordChannel LogChannel = ctx.Guild.GetChannel(1188947815569817683);
+            DiscordChannel LogChannel = ctx.Guild.GetChannel(Program.reader.logChannelID);
             await LogChannel.SendMessageAsync(LogMessage);
         }
         // ----------  MUTE SYSTEM ----------
@@ -354,7 +354,7 @@ namespace Administrator.Commands
                 Color = DiscordColor.Azure
             };
 
-            DiscordChannel LogChannel = ctx.Guild.GetChannel(1188947815569817683);
+            DiscordChannel LogChannel = ctx.Guild.GetChannel(Program.reader.logChannelID);
             await LogChannel.SendMessageAsync(LogMessage);
         }
         // ---------- CHATCLEAR SYSTEM ----------
