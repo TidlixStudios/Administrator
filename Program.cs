@@ -56,6 +56,7 @@ namespace Administrator
             Client.ComponentInteractionCreated += ComponentInteraction;
             Client.ModalSubmitted += ModalSubbmitted;
             Client.MessageCreated += MessageSended;
+            Client.MessageDeleted += MessageDeleted;
 
             // Register Commands
             var SlashCommands = Client.UseSlashCommands();
@@ -72,7 +73,9 @@ namespace Administrator
 
             // Always oline
             await Task.Delay(-1);
-        }        
+        }
+
+        
 
         private static async Task MemberJoined(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberAddEventArgs args)
         {
@@ -141,6 +144,16 @@ namespace Administrator
 
             if (args.Message.Channel == VerifyChannel) await Verify.DeleteNonVerifyMessages(args);
             else if (args.Message.Channel == CountingChannel) await Counting.CheckNumber(args);
+            else return;
+        }
+
+        private static async Task MessageDeleted(DiscordClient sender, DSharpPlus.EventArgs.MessageDeleteEventArgs args)
+        {
+            var CountingChannel = args.Guild.GetChannel(reader.countingChannelID);
+
+            var Counting = new CountingMessageInteraction();
+
+            if (args.Message.Channel == CountingChannel) await Counting.DeletedMessage(args);
             else return;
         }
 

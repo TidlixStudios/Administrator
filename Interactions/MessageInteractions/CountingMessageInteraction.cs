@@ -23,6 +23,7 @@ namespace Administrator.Interactions.MessageInteractions
             if (!isNumber) return;
 
             // Check if is Last Sender
+            /* - CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-
             if (args.Message.Author == lastSender)
             {
                 var lastSenderError = new DiscordEmbedBuilder()
@@ -37,6 +38,7 @@ namespace Administrator.Interactions.MessageInteractions
 
                 return;
             }
+            - CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-*/
 
 
             // Check Number 
@@ -62,6 +64,32 @@ namespace Administrator.Interactions.MessageInteractions
 
                 return;
             }
+        }
+
+        public async Task DeletedMessage(DSharpPlus.EventArgs.MessageDeleteEventArgs args)
+        {
+            var Reader = new GameReader();
+            await Reader.ReadCounting();
+
+            DiscordMember member = (DiscordMember)args.Message.Author;
+            DiscordMember LastAuthor = args.Guild.GetMemberAsync(Reader.Counting_LastUserID).Result; 
+            var CurrentNumber = Reader.Counting_CurrentNumber;
+            var NextNumber = Reader.Counting_CurrentNumber + 1;
+
+            int.TryParse(args.Message.Content, out int MessageNumber);
+
+            if (member != LastAuthor) return;
+            if (MessageNumber != CurrentNumber) return;
+
+            var embed = new DiscordEmbedBuilder()
+            {
+                Title = "Counting System!",
+                Description = $"Die Nachricht von {member.Mention} wurde gelöscht!" +
+                $"\n die nächste Zahl ist: **{NextNumber}**",
+                Color = DiscordColor.Goldenrod
+            };
+
+            await args.Channel.SendMessageAsync(embed);
         }
     }
 }

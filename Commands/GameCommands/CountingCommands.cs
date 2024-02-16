@@ -16,11 +16,11 @@ namespace Administrator.Commands.GameCommands
             await ctx.DeferAsync();
             var Rules = new DiscordEmbedBuilder()
             {
-                Title = "Counting Regeln!",
+                Title = "Counting System!",
                 Description = "Die Regeln von Counting sind simpel:" +
                 "\n- Zählt als Team so weit wie möglich" +
                 "\n- Zählt in der richtigen Reihenfolge" +
-                "\n- Du darfst nicht 2 mal Zählen",
+                "\n- Du darfst nicht 2 mal  hintereinander Zählen",
                 Color = DiscordColor.Azure
             };
             await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(Rules));
