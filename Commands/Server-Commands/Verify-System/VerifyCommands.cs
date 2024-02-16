@@ -55,7 +55,7 @@ namespace Administrator.Commands.Verify_System
             await ctx.DeferAsync();
             await ctx.DeleteResponseAsync();
 
-            var Channel = ctx.Guild.GetChannel(1201115683895914536);
+            var Channel = ctx.Guild.GetChannel(Program.reader.verifyBotChannelID);
 
             var embed = new DiscordEmbedBuilder()
             {

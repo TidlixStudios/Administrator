@@ -17,6 +17,8 @@ using System.Threading.Channels;
 using static System.Net.Mime.MediaTypeNames;
 using Administrator.Commands.Server_Commands;
 using System.Runtime.CompilerServices;
+using Administrator.Interactions.MessageInteractions;
+using Administrator.Commands.GameCommands;
 
 namespace Administrator
 {
@@ -49,6 +51,8 @@ namespace Administrator
 
             // Methods
             Client.Ready += Client_Ready;
+            Client.GuildMemberAdded += MemberJoined;
+            Client.GuildMemberRemoved += MeberLeft;
             Client.ComponentInteractionCreated += ComponentInteraction;
             Client.ModalSubmitted += ModalSubbmitted;
             Client.MessageCreated += MessageSended;
@@ -60,6 +64,7 @@ namespace Administrator
             SlashCommands.RegisterCommands<VerifyCommands>();
             SlashCommands.RegisterCommands<TicketCommands>();
             SlashCommands.RegisterCommands<MessageCommands>();
+            SlashCommands.RegisterCommands<CountingCommands>();
 
             // Connect Client
             await Client.ConnectAsync();
@@ -67,22 +72,75 @@ namespace Administrator
 
             // Always oline
             await Task.Delay(-1);
+        }        
+
+        private static async Task MemberJoined(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberAddEventArgs args)
+        {
+            DiscordChannel channel = args.Guild.GetChannel(reader.welcomeChannelID);
+            DiscordChannel vChannel = args.Guild.GetChannel(reader.verifyChannelID);
+            DiscordMember member = args.Member;
+
+            var Random = new Random();
+            var MessageNr = Random.Next(1, 5);
+            string[] WelcomeTitle = new string[6];
+            string[] WelcomeDescription = new string[6];
+
+
+            WelcomeTitle[1] = "Ein neues Mitglied ist erschienen!";
+            WelcomeTitle[2] = "Klopf Klopf! Wer ist da? Ein neues Mitglied!";
+            WelcomeTitle[3] = "Psst! Ich habe ein neues Mitglied gesichtet!";
+            WelcomeTitle[4] = "EIN EINDRINGLING!";
+            WelcomeTitle[5] = "Wir haben Zuwachs!";
+
+            WelcomeDescription[1] = $"Begrüßt mit mir unser neustes Mitglied {member.Mention}!";
+            WelcomeDescription[2] = $"{member.Mention} hat gerade diesen Server betreten! Willkommen!";
+            WelcomeDescription[3] = $"Ich habe ein seltenes {member.Mention} gesichtet! Hallo!";
+            WelcomeDescription[4] = $"Ach ne! Es ist doch nur {member.Mention}! Willkommen!";
+            WelcomeDescription[5] = $"{member.Mention} ist soeben ganz frisch auf diesem Server gelandet! Wie geht's?";
+
+            var welcomeEmbed = new DiscordEmbedBuilder()
+            {
+                Title = WelcomeTitle[MessageNr],
+                Description = WelcomeDescription[MessageNr],
+                Color = DiscordColor.SpringGreen,
+                Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                {
+                    Url = member.AvatarUrl
+                },
+                Footer = new DiscordEmbedBuilder.EmbedFooter
+                {
+                    Text = $"Um den Zugriff auf alle Kanäle zu erhalten, bitte gehe zu #{vChannel.Name} und schließe die Verifizierung ab!"
+                },
+            };
+
+            await channel.SendMessageAsync(welcomeEmbed);
+        }
+
+        private static async Task MeberLeft(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberRemoveEventArgs args)
+        {
+            DiscordChannel channel = args.Guild.GetChannel(reader.welcomeChannelID);
+            DiscordMember member = args.Member;
+
+            var LeaveEmbed = new DiscordEmbedBuilder()
+            {
+                Title = "Ein Mitglied hat uns verlassen!",
+                Description = $"{member.Mention} hat sich leider von diesem Server verabschiedet! :(",
+                Color = DiscordColor.DarkRed
+            };
+
+            await channel.SendMessageAsync(LeaveEmbed);
         }
 
         private static async Task MessageSended(DiscordClient sender, DSharpPlus.EventArgs.MessageCreateEventArgs args)
         {
-
             var VerifyChannel = args.Guild.GetChannel(reader.verifyChannelID);
+            var CountingChannel = args.Guild.GetChannel(reader.countingChannelID);
 
-            if (args.Message.Channel == VerifyChannel)
-            {
-                if (args.Message.Id != 1203636725172273152)
-                {
-                    await Task.Delay(10000);
-                    if (args.Message == null) return;
-                    await args.Message.DeleteAsync();
-                }
-            }
+            var Verify = new VerifyMessageInteraction();
+            var Counting = new CountingMessageInteraction();
+
+            if (args.Message.Channel == VerifyChannel) await Verify.DeleteNonVerifyMessages(args);
+            else if (args.Message.Channel == CountingChannel) await Counting.CheckNumber(args);
             else return;
         }
 
@@ -109,7 +167,6 @@ namespace Administrator
                         parent: SupportCategorie);
 
                     await TicketChannel.AddOverwriteAsync(member, allow: Permissions.AccessChannels);
-                    await TicketChannel.AddOverwriteAsync(member, allow: Permissions.SendMessages);
 
                     Task.Delay(10).Wait();
                     var embed = new DiscordEmbedBuilder()

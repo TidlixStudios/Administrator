@@ -3,9 +3,11 @@
   "token": "Token",
 
   // Channels
+  "welcomeChannelID": "ChannelID",
   "verifyChannelID": "ChannelID",
   "verifyBotChannelID": "ChannelID",
   "logChannelID": "ChannelID",
+  "countingChannelID": "ChannelID",
 
   "supportCategorieID": "CategorieID",
 
