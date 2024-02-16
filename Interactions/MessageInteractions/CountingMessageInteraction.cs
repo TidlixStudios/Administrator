@@ -23,7 +23,6 @@ namespace Administrator.Interactions.MessageInteractions
             if (!isNumber) return;
 
             // Check if is Last Sender
-            /* - CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-
             if (args.Message.Author == lastSender)
             {
                 var lastSenderError = new DiscordEmbedBuilder()
@@ -38,8 +37,6 @@ namespace Administrator.Interactions.MessageInteractions
 
                 return;
             }
-            - CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-- CURRENTLY DISABLED-*/
-
 
             // Check Number 
             if (nr == currentNumber+1)
