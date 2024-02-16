@@ -1,6 +1,7 @@
 ﻿{
   // General
   "token": "Token",
+  "botID":  "botID",
 
   // Channels
   "welcomeChannelID": "ChannelID",

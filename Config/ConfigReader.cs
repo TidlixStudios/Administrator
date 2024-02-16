@@ -14,6 +14,10 @@ namespace Administrator.Config
         public string token { get; set; } = "";
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        public ulong botID { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+
 
         public ulong welcomeChannelID { get; set; }
         public ulong verifyChannelID { get; set; }
@@ -41,6 +45,9 @@ namespace Administrator.Config
                 this.token = data.token;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
+                this.botID = data.botID;
+
+
                 this.welcomeChannelID = data.welcomeChannelID;
                 this.verifyChannelID = data.verifyChannelID;
                 this.verifyBotChannelID = data.verifyBotChannelID;
@@ -64,6 +71,7 @@ namespace Administrator.Config
             public string token { get; set; } = "";
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
+            public ulong botID { get; set; }
 
             public ulong welcomeChannelID { get; set; }
             public ulong verifyChannelID { get; set; }

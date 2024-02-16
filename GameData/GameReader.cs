@@ -26,8 +26,10 @@ namespace Administrator.GameData
                 this.Counting_LastUserID = data.lastUserID;
             }
         }
-        public async Task SetCounting(int nr = 0, ulong userID = 1203630363088519188)
+        public async Task SetCounting(int nr = 0, ulong userID = 1234567890)
         {
+            
+            if (userID == 1234567890) userID = Program.reader.botID; 
             using (StreamWriter sw = new StreamWriter($"{AppDomain.CurrentDomain.BaseDirectory}/GameData/Counting.json"))
             {
                     string json = "{" +
