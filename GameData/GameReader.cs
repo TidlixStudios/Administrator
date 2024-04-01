@@ -9,8 +9,11 @@ namespace Administrator.GameData
 {
     public class GameReader
     {
+
+        // Counting
         public int Counting_CurrentNumber { get; set; }
         public ulong Counting_LastUserID { get; set; }
+
 
         public async Task ReadCounting()
         {
@@ -28,7 +31,6 @@ namespace Administrator.GameData
         }
         public async Task SetCounting(int nr = 0, ulong userID = 1234567890)
         {
-            
             if (userID == 1234567890) userID = Program.reader.botID; 
             using (StreamWriter sw = new StreamWriter($"{AppDomain.CurrentDomain.BaseDirectory}/GameData/Counting.json"))
             {

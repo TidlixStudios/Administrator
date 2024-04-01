@@ -1,7 +1,8 @@
 ﻿{
   // General
   "token": "Token",
-  "botID":  "botID",
+  "botID": "botID",
+  "guildID": "guildID",
 
   // Channels
   "welcomeChannelID": "ChannelID",
@@ -9,10 +10,17 @@
   "verifyBotChannelID": "ChannelID",
   "logChannelID": "ChannelID",
   "countingChannelID": "ChannelID",
+  "youtubeNotifierChannelID": "ChannelID",
+  "studiosNotifierChannelID": "ChannelID",
 
   "supportCategorieID": "CategorieID",
 
   // Roles
   "teamRoleID": "RoleID",
-  "memberRoleID": "RoleID"
+  "memberRoleID": "RoleID",
+  "notifierRoleYT": "RoleID",
+  "notifierRoleStudios": "RoleID",
+  "notifierRoleTwitch": "RoleID",
+  "developerRole": "RoleID",
+  "gameRole": "RoleID"
 }

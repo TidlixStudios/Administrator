@@ -1,4 +1,7 @@
-﻿using DSharpPlus.Entities;
+﻿using Administrator.Config;
+using DSharpPlus;
+using DSharpPlus.Entities;
+using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using System;
 using System.Collections.Generic;
@@ -11,7 +14,7 @@ namespace Administrator.Commands.Server_Commands
     public class MessageCommands : ApplicationCommandModule
     {
         [SlashCommand("CreateRuleMessage", "Erstelle eine Nachricht mit allen Regeln!")]
-        [SlashCommandPermissions(DSharpPlus.Permissions.Administrator)]
+        [SlashCommandPermissions(Permissions.Administrator)]
         public async Task CreateRuleMessage(InteractionContext ctx)
         {
             await ctx.DeferAsync();
@@ -52,19 +55,110 @@ namespace Administrator.Commands.Server_Commands
         }
 
         [SlashCommand("News", "Erstelle eine Nachricht mit Neulichkeiten!")]
-        [SlashCommandPermissions(DSharpPlus.Permissions.Administrator)]
-        public async Task CreateNewsMessage(InteractionContext ctx, [Option("Text", "Was soll die Nachricht sein?")] string text)
+        [SlashCommandPermissions(Permissions.Administrator)]
+        public async Task CreateNewsMessage(InteractionContext ctx)
+        {
+            string title = "Platzhalter Text";
+            string description = "Platzhalter Text";
+
+            var Modal = new DiscordInteractionResponseBuilder()
+                .WithTitle("News")
+                .WithCustomId("News_MDL")
+                .AddComponents(new TextInputComponent(
+                    label: "Überschrift",
+                    customId: "news_title", 
+                    placeholder: "z.B: Neuer Channel!", 
+                    required: true, 
+                    style: TextInputStyle.Short))
+                .AddComponents(new TextInputComponent(
+                    label: "Beschreibung",
+                    customId: "news_description",
+                    placeholder: "z.B: Ab sofort gibt es einen neuen Kanal auf diesem Server! ",
+                    required: true,
+                    style: TextInputStyle.Paragraph));
+
+            await ctx.CreateResponseAsync(InteractionResponseType.Modal, Modal);
+
+            var Interactivity = ctx.Client.GetInteractivity();
+            var ModalResponse = Interactivity.WaitForModalAsync(modal_id: "News_MDL").Result;
+
+            title = ModalResponse.Result.Values["news_title"];
+            description = ModalResponse.Result.Values["news_description"];
+
+
+            var Embed = new DiscordEmbedBuilder()
+            {
+                Title = title,
+                Description = description,
+                Color = DiscordColor.Yellow
+            };
+            await ctx.Channel.SendMessageAsync(Embed);
+        }
+
+        [SlashCommand("CreateReactionRoles", "Erstelle eine Nachricht, mit der sich Nutzer, verschiedene Rollen auswählen können")]
+        [SlashCommandPermissions(Permissions.Administrator)]
+        public async Task CreateReactionRoles (InteractionContext ctx)
         {
             await ctx.DeferAsync();
             await ctx.DeleteResponseAsync();
 
+            var Config = Program.reader;
+            var Guild = await Program.Client.GetGuildAsync(ctx.Guild.Id);
+
+            DiscordRole game = Guild.GetRole(Config.gameRoleID);
+            DiscordRole dev = Guild.GetRole(Config.developerRoleID);
+            DiscordRole ntf_yt = Guild.GetRole(Config.notifierRoleYoutubeID);
+            DiscordRole ntf_st = Guild.GetRole(Config.notifierRoleStudiosID);
+            DiscordRole ntf_tw = Guild.GetRole(Config.notifierRoleTwitchID);
+
             var Embed = new DiscordEmbedBuilder()
             {
-                Title = "News!",
-                Description = text,
-                Color = DiscordColor.Yellow
+                Title = "Rollenauswahl!",
+                Description = "**Bitte wähle welche Rollen du haben möchtest!**" +
+                "\nDrücke dazu einfach auf den dafür vorgesehenen Knopf!" +
+                "\n\nFolgende Rollen stehen dir zur Auswahl:" +
+                $"\n> {game.Mention} ==> Du magst Minigames? Dann wähle diese Rolle um Zugriff auf die Minigames dieses Servers zu erhalten!" +
+                $"\n\n> {dev.Mention} ==> Du brauchst hilfe beim Programmieren, willst zeigen was du erschaffen hast, oder einfach über das Programmieren schreiben? dann wähle diese Rolle aus!" +
+                $"\n\n> {ntf_yt.Mention} ==> Du möchtest Benachrichtigt werden, wenn ein neues Video auf dem Kanal Tidlix hochgeladen wurde? Dann wähle diese Rolle, um kein Video mehr zu verpassen!" + 
+                $"\n\n> {ntf_st.Mention} ==> Du möchtest eine Benachrichtigung erhalten, wenn es neues Video auf dem Kanal TidlixStudios gibt? Mit dieser Rolle verpasst du keinen Stream mehr!" +
+                $"\n\n> {ntf_tw.Mention} ==> Du möchtest sofort wissen, wenn Tidlix auf Twitch Live ist? Dann wähle diese Rolle, um bei jedem Stream dabei zu sein!" +
+                $"\n\nUm eine Rolle wieder zu entfernen, drücke einfach ein zweites mal auf den Knopf, um die Rolle los zu werden!",
+                Color = DiscordColor.SpringGreen
             };
-            await ctx.Channel.SendMessageAsync(Embed);
+
+            DiscordButtonComponent gameButton = new DiscordButtonComponent(
+                label: $"{game.Name}",
+                customId: "RR_Game_BTN",
+                style: ButtonStyle.Secondary);
+            DiscordButtonComponent devButton = new DiscordButtonComponent(
+                label: $"{dev.Name}",
+                customId: "RR_Dev_BTN",
+                style: ButtonStyle.Secondary);
+            DiscordButtonComponent ntfYtButton = new DiscordButtonComponent(
+                label: $"{ntf_yt.Name}",
+                customId: "RR_NtfYt_BTN",
+                style: ButtonStyle.Secondary);
+            DiscordButtonComponent ntfStButton = new DiscordButtonComponent(
+                label: $"{ntf_st.Name}",
+                customId: "RR_NtfSt_BTN",
+                style: ButtonStyle.Secondary);
+            DiscordButtonComponent ntfTwButton = new DiscordButtonComponent(
+                label: $"{ntf_tw.Name}",
+                customId: "RR_NtfTw_BTN",
+                style: ButtonStyle.Secondary);
+
+
+
+            DiscordMessageBuilder Message = new DiscordMessageBuilder()
+                .AddEmbed(Embed)
+                .AddComponents(
+                    gameButton, 
+                    devButton, 
+                    ntfYtButton, 
+                    ntfStButton, 
+                    ntfTwButton);
+
+            await ctx.Channel.SendMessageAsync(Message);
         }
     }
 }

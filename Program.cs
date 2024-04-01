@@ -19,6 +19,11 @@ using Administrator.Commands.Server_Commands;
 using System.Runtime.CompilerServices;
 using Administrator.Interactions.MessageInteractions;
 using Administrator.Commands.GameCommands;
+using Administrator.Interactions.ButtonInteractions;
+using Administrator.Notifiers.Youtube;
+using System.Timers;
+using Timer = System.Timers.Timer;
+using Administrator.Notifiers.Studios;
 
 namespace Administrator
 {
@@ -28,6 +33,14 @@ namespace Administrator
         public static DiscordClient Client { get; set; }
         public static ConfigReader reader { get; set; }
         public static ulong BotID { get; set; }
+
+        private static YoutubeVideo _videoYT = new YoutubeVideo();
+        private static YoutubeVideo tempYT = new YoutubeVideo();
+        private static YoutubeEngine _YoutubeEngine = new YoutubeEngine();
+
+        private static StudiosVideo _videoSt = new StudiosVideo();
+        private static StudiosVideo tempSt = new StudiosVideo();
+        private static StudiosEngine _StudiosEnige = new StudiosEngine();
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
         static async Task Main(string[] args)
@@ -68,15 +81,22 @@ namespace Administrator
             SlashCommands.RegisterCommands<MessageCommands>();
             SlashCommands.RegisterCommands<CountingCommands>();
 
+            await Task.Delay(1000);
+
             // Connect Client
             await Client.ConnectAsync();
             await SlashCommands.RefreshCommands();
 
+            await Task.Delay(1000);
+
+            // Start Loops
+            await StartYoutubeNotifier();
+            await StartStudiosNotifier();
+
+
             // Always oline
             await Task.Delay(-1);
         }
-
-        
 
         private static async Task MemberJoined(DiscordClient sender, DSharpPlus.EventArgs.GuildMemberAddEventArgs args)
         {
@@ -216,57 +236,144 @@ namespace Administrator
 
         private static async Task ComponentInteraction(DiscordClient sender, DSharpPlus.EventArgs.ComponentInteractionCreateEventArgs args)
         {
-            if (args.Id == "Verify_BTN") 
-            {
-                await args.Interaction.DeferAsync();
-                await args.Interaction.DeleteOriginalResponseAsync();
-                DiscordMember member = (DiscordMember)args.User;
+            var Support = new SupportTicket();
+            var Verify = new VerifyButton();
+            var RR = new ReactionRoles();
 
-                var Verification = new Verify();
-                await Verification.SendCode(member, args.Channel);
-
-                var userRole = args.Guild.GetRole(reader.memberRoleID);
-                var Channel = args.Guild.GetChannel(reader.verifyBotChannelID);
-
-                bool gotCode = false;
-                DateTime time = DateTime.Now.AddMinutes(5);
-                while (!gotCode)
-                {
-                    if (DateTime.Now >= time) return; //time up
-                    var waiter = Channel.GetNextMessageAsync();
-                    var message = waiter.Result;
-                    var embed = message.Result.Embeds.First();
-
-                    ulong.TryParse(embed.Title, out ulong id);
-                    int.TryParse(embed.Description, out int code);
-
-                    if (id != args.User.Id) break; //wrong User
-                    if (code != Verification.Code)
-                    {
-                        var Error = new DiscordEmbedBuilder()
-                        {
-                            Title = "Verifizierungs Prozess!",
-                            Description = "Du hast den falschen Code eingegeben! Bitte versuche es erneut!",
-                            Color = DiscordColor.Red
-                        };
-                        await member.CreateDmChannelAsync().Result.SendMessageAsync(Error);
-                        break;
-                    } //wrong Code
-
-                    await member.GrantRoleAsync(userRole);
-                    gotCode = true;
-                }
-            } // Verification Procces
-            if (args.Id == "Sup_Ticket_create_BTN")
-            {
-                var modal = new DiscordInteractionResponseBuilder()
-                    .WithTitle("Ticket erstellen!")
-                    .WithCustomId("Ticket_MDL")
-                    .AddComponents(new TextInputComponent(label: "Dein Problem:", customId: "sup_ticket_topic", placeholder: "Nenne dein Problem kurz und Knapp!", required: true, style: TextInputStyle.Short))
-                    .AddComponents(new TextInputComponent(label: "Problembeschreibung:", customId: "sup_ticket_description",placeholder: "Beschreibe dein Problem so genau wie möglich!", required: true, style: TextInputStyle.Paragraph));
-                await args.Interaction.CreateResponseAsync(InteractionResponseType.Modal, modal);
-            } // Ticket creation
+            if (args.Id == "Verify_BTN") await Verify.SendCode(args);
+            else if (args.Id == "Sup_Ticket_create_BTN") await Support.CreateTicket(args);
+            else if (args.Id == "RR_Game_BTN") await RR.ChangeGameRole(args);
+            else if (args.Id == "RR_Dev_BTN") await RR.ChangeDevRole(args);
+            else if (args.Id == "RR_NtfYt_BTN") await RR.ChangeNtfYtRole(args);
+            else if (args.Id == "RR_NtfSt_BTN") await RR.ChangeNtfStRole(args);
+            else if (args.Id == "RR_NtfTw_BTN") await RR.ChangeNtfTwRole(args);
         }
+
+
+        private static async Task StartYoutubeNotifier ()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("Youtube Notifier Started");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            var Config = reader;
+
+            DiscordGuild guild = await Client.GetGuildAsync(Config.guildID);
+
+            DiscordRole notifierRole = guild.GetRole(Config.notifierRoleYoutubeID);
+            RoleMention mention = new RoleMention(notifierRole);
+
+            DiscordChannel channel = guild.GetChannel(Config.youtubeNotifierChannelID);
+
+            var timer = new Timer(120000);
+            timer.Elapsed += async (sender, e) =>
+            {
+                _videoYT = _YoutubeEngine.GetLatestVideo();
+                var lastCheckedAt = DateTime.Now;
+
+                if (_videoYT != null)
+                {
+                    if (_videoYT.videoUrl == tempYT.videoUrl)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("[Youtube Notifier] Same Video detectet!");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (_videoYT.publishedAt < lastCheckedAt)
+                    {
+                        DiscordEmbedBuilder messageEmbed = new DiscordEmbedBuilder()
+                        {
+                            Title = "Ein neues Video wurde hochgeladen!",
+                            Description = "Tidlix hat ein neues Video hochgeladen! Es würde mich freuen, wenn du es dir anschauen würdest!" +
+                            $"\n\nTitel: {_videoYT.videoTitle}" +
+                            $"\nURL: {_videoYT.videoUrl}",
+                            Color = DiscordColor.Blurple,
+                            Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail 
+                            {
+                                Url = _videoYT.thumbnail
+                            },
+                            Footer = new DiscordEmbedBuilder.EmbedFooter
+                            {
+                                Text = $"Hochgeladen am: {_videoYT.publishedAt}"
+                            }
+                        };
+
+                        DiscordMessageBuilder message = new DiscordMessageBuilder()
+                            .WithContent(notifierRole.Mention)
+                            .WithAllowedMention(mention)
+                            .AddEmbed(messageEmbed);
+
+                        await channel.SendMessageAsync(message);
+                        tempYT = _videoYT;
+                    }
+                }
+            };
+
+            timer.Start();
+        }
+
+        private static async Task StartStudiosNotifier()
+        {
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
+            Console.WriteLine("Studios Notifier Started");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            var Config = reader;
+
+            DiscordGuild guild = await Client.GetGuildAsync(Config.guildID);
+
+            DiscordRole notifierRole = guild.GetRole(Config.notifierRoleStudiosID);
+            RoleMention mention = new RoleMention(notifierRole);
+
+            DiscordChannel channel = guild.GetChannel(Config.studiosNotifierChannelID);
+
+            var timer = new Timer(120000);
+            timer.Elapsed += async (sender, e) =>
+            {
+                _videoSt = _StudiosEnige.GetLatestVideo();
+                var lastCheckedAt = DateTime.Now;
+
+                if (_videoSt != null)
+                {
+                    if (_videoSt.videoTitle == tempSt.videoTitle)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine("[Studios Notifier] Same Video detectet!");
+                        Console.ForegroundColor = ConsoleColor.White;
+                    }
+                    else if (_videoSt.publishedAt < lastCheckedAt)
+                    {
+                        DiscordEmbedBuilder messageEmbed = new DiscordEmbedBuilder()
+                        {
+                            Title = "Ein neues Video wurde hochgeladen!",
+                            Description = "Tidlix hat ein neues Video hochgeladen! Es würde mich freuen, wenn du es dir anschauen würdest!" +
+                            $"\n\nTitel: {_videoSt.videoTitle}" +
+                            $"\nURL: {_videoSt.videoUrl}",
+                            Color = DiscordColor.Blurple,
+                            Thumbnail = new DiscordEmbedBuilder.EmbedThumbnail
+                            {
+                                Url = _videoSt.thumbnail
+                            },
+                            Footer = new DiscordEmbedBuilder.EmbedFooter
+                            {
+                                Text = $"Hochgeladen am: {_videoSt.publishedAt}"
+                            }
+                        };
+
+                        DiscordMessageBuilder message = new DiscordMessageBuilder()
+                            .WithContent(notifierRole.Mention)
+                            .WithAllowedMention(mention)
+                            .AddEmbed(messageEmbed);
+
+                        await channel.SendMessageAsync(message);
+                        tempSt = _videoSt;
+                    }
+                }
+            };
+
+            timer.Start();
+        }
+
 
         private static Task Client_Ready(DiscordClient sender, DSharpPlus.EventArgs.ReadyEventArgs args)
         {

@@ -52,7 +52,7 @@ namespace Administrator.Interactions.MessageInteractions
                 var wrongNumberError = new DiscordEmbedBuilder()
                 {
                     Title = "Fehler!",
-                    Description = $"{args.Message.Author.Mention} Du die Falsche Nummer genannt!" +
+                    Description = $"{args.Message.Author.Mention} Du die falsche Nummer genannt!" +
                     $"\n\nDie nächste Zahl ist 1!",
                     Color = DiscordColor.Red,
                 };

@@ -17,6 +17,7 @@ namespace Administrator.Config
 #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public ulong botID { get; set; }
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        public ulong guildID { get; set; }
 
 
         public ulong welcomeChannelID { get; set; }
@@ -24,12 +25,19 @@ namespace Administrator.Config
         public ulong verifyBotChannelID { get; set; }
         public ulong logChannelID { get; set; }
         public ulong countingChannelID { get; set; }
+        public ulong youtubeNotifierChannelID { get; set; }
+        public ulong studiosNotifierChannelID { get; set; }
 
         public ulong supportCategorieID { get; set; }
 
 
         public ulong teamRoleID { get; set; }
         public ulong memberRoleID { get; set; } 
+        public ulong notifierRoleYoutubeID { get; set; }
+        public ulong notifierRoleStudiosID { get; set; }
+        public ulong notifierRoleTwitchID { get; set; }
+        public ulong developerRoleID { get; set; }
+        public ulong gameRoleID { get; set; }
 
 
 
@@ -44,8 +52,8 @@ namespace Administrator.Config
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
                 this.token = data.token;
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
-
                 this.botID = data.botID;
+                this.guildID = data.guildID;
 
 
                 this.welcomeChannelID = data.welcomeChannelID;
@@ -53,11 +61,18 @@ namespace Administrator.Config
                 this.verifyBotChannelID = data.verifyBotChannelID;
                 this.logChannelID = data.logChannelID;
                 this.countingChannelID = data.countingChannelID;
+                this.youtubeNotifierChannelID = data.youtubeNotifierChannelID;
+                this.studiosNotifierChannelID = data.studiosNotifierChannelID;
 
                 this.supportCategorieID = data.supportCategorieID;
 
                 this.teamRoleID = data.teamRoleID;
                 this.memberRoleID = data.memberRoleID;
+                this.notifierRoleYoutubeID = data.notifierRoleYoutubeID;
+                this.notifierRoleStudiosID = data.notifierRoleStudiosID;
+                this.notifierRoleTwitchID = data.notifierRoleTwitchID;
+                this.gameRoleID = data.gameRoleID;
+                this.developerRoleID = data.developerRoleID;
 
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.WriteLine("Read Config...");
@@ -70,20 +85,27 @@ namespace Administrator.Config
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             public string token { get; set; } = "";
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
             public ulong botID { get; set; }
+            public ulong guildID { get; set; }
 
             public ulong welcomeChannelID { get; set; }
             public ulong verifyChannelID { get; set; }
             public ulong verifyBotChannelID { get; set; }
             public ulong logChannelID {  get; set; }
             public ulong countingChannelID { get; set; }
+            public ulong youtubeNotifierChannelID { get; set; }
+            public ulong studiosNotifierChannelID { get; set; }
 
             public ulong supportCategorieID { get; set; }
 
 
             public ulong teamRoleID {  get; set; }
-            public ulong memberRoleID {  get; set; }    
+            public ulong memberRoleID {  get; set; }
+            public ulong notifierRoleYoutubeID { get; set; }
+            public ulong notifierRoleStudiosID { get; set; }
+            public ulong notifierRoleTwitchID { get; set; }
+            public ulong developerRoleID { get; set; }
+            public ulong gameRoleID { get; set; }
         }
     }
 }
