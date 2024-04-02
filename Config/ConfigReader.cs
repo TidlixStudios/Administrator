@@ -12,12 +12,11 @@ namespace Administrator.Config
     {
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public string token { get; set; } = "";
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public ulong botID { get; set; }
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         public ulong guildID { get; set; }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+        public string googleApiKey { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
 
         public ulong welcomeChannelID { get; set; }
@@ -54,6 +53,7 @@ namespace Administrator.Config
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
                 this.botID = data.botID;
                 this.guildID = data.guildID;
+                this.googleApiKey = data.googleApiKey;
 
 
                 this.welcomeChannelID = data.welcomeChannelID;
@@ -84,9 +84,11 @@ namespace Administrator.Config
         {
 #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             public string token { get; set; } = "";
-#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
             public ulong botID { get; set; }
             public ulong guildID { get; set; }
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+            public string googleApiKey { get; set; }
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 
             public ulong welcomeChannelID { get; set; }
             public ulong verifyChannelID { get; set; }

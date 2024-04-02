@@ -1,4 +1,5 @@
-﻿using Google.Apis.Services;
+﻿using Administrator.Config;
+using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,13 @@ namespace Administrator.Notifiers.Studios
     public class StudiosEngine
     {
         private string channelID = "UC9gt5OJbnyqAAPWa3DacTXw";
-        private string apiKey = "AIzaSyCBJiEBqZXl1OEdng9YC3u1qOkw76VKJdU";
         private StudiosVideo _video = new StudiosVideo();
 
         public StudiosVideo GetLatestVideo ()
         {
+            ConfigReader Config = Program.reader;
+            string apiKey = Config.googleApiKey;
+
             string videoId;
             string videoUrl;
             string videoTitle;
@@ -56,9 +59,13 @@ namespace Administrator.Notifiers.Studios
                         publishedAt = videoPublishedAt,
                     };
                 }
+#pragma warning disable CS8603 // Possible null reference return.
                 return null;
+#pragma warning restore CS8603 // Possible null reference return.
             }
+#pragma warning disable CS8603 // Possible null reference return.
             return null;
+#pragma warning restore CS8603 // Possible null reference return.
         }
     }
 }

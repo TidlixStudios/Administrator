@@ -1,26 +1,27 @@
 ﻿{
   // General
-  "token": "Token",
+  "token": "token",
   "botID": "botID",
   "guildID": "guildID",
+  "googleApiKey":  "apiKey",
 
   // Channels
-  "welcomeChannelID": "ChannelID",
-  "verifyChannelID": "ChannelID",
-  "verifyBotChannelID": "ChannelID",
-  "logChannelID": "ChannelID",
-  "countingChannelID": "ChannelID",
-  "youtubeNotifierChannelID": "ChannelID",
-  "studiosNotifierChannelID": "ChannelID",
+  "welcomeChannelID": "channelID",
+  "verifyChannelID": "channelID",
+  "verifyBotChannelID": "channelID",
+  "logChannelID": "channelID",
+  "countingChannelID": "channelID",
+  "youtubeNotifierChannelID": "channelID",
+  "studiosNotifierChannelID": "channelID",
 
   "supportCategorieID": "CategorieID",
 
   // Roles
-  "teamRoleID": "RoleID",
-  "memberRoleID": "RoleID",
-  "notifierRoleYT": "RoleID",
-  "notifierRoleStudios": "RoleID",
-  "notifierRoleTwitch": "RoleID",
-  "developerRole": "RoleID",
-  "gameRole": "RoleID"
+  "teamRoleID": "CategorieID",
+  "memberRoleID": "CategorieID",
+  "notifierRoleYoutubeID": "CategorieID",
+  "notifierRoleStudiosID": "CategorieID",
+  "notifierRoleTwitchID": "CategorieID",
+  "developerRoleID": "CategorieID",
+  "gameRoleID": "CategorieID"
 }

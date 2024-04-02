@@ -1,4 +1,5 @@
-﻿using Google.Apis.Services;
+﻿using Administrator.Config;
+using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using System;
 using System.Collections.Generic;
@@ -10,12 +11,14 @@ namespace Administrator.Notifiers.Youtube
 {
     public class YoutubeEngine
     {
-        public string channelID = "UCavdx9Wwwmjmg923LdAuM4w";
-        public string apiKey = "AIzaSyBUMOD27XyVx3tUWIO8DeqlarqaGbPKb5E";
-        public YoutubeVideo _video = new YoutubeVideo();
+        private string channelID = "UCavdx9Wwwmjmg923LdAuM4w";
+        private YoutubeVideo _video = new YoutubeVideo();
 
         public YoutubeVideo GetLatestVideo ()
         {
+            ConfigReader Config = Program.reader;
+            string apiKey = Config.googleApiKey;
+
             string videoId;
             string videoUrl;
             string videoTitle;
