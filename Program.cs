@@ -273,14 +273,15 @@ namespace Administrator
 
                 if (_videoYT != null)
                 {
-                    if (_videoYT.videoUrl == tempYT.videoUrl)
+                    if (_videoYT.publishedAt < lastCheckedAt)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("[Youtube Notifier] Same Video detectet!");
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else if (_videoYT.publishedAt < lastCheckedAt)
-                    {
+                        if (_videoYT.videoUrl == tempYT.videoUrl)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("[Youtube Notifier] Same Video detectet!");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            return;
+                        }
                         DiscordEmbedBuilder messageEmbed = new DiscordEmbedBuilder()
                         {
                             Title = "Ein neues Video wurde hochgeladen!",
@@ -335,14 +336,15 @@ namespace Administrator
 
                 if (_videoSt != null)
                 {
-                    if (_videoSt.videoTitle == tempSt.videoTitle)
+                    if (_videoSt.publishedAt < lastCheckedAt)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("[Studios Notifier] Same Video detectet!");
-                        Console.ForegroundColor = ConsoleColor.White;
-                    }
-                    else if (_videoSt.publishedAt < lastCheckedAt)
-                    {
+                        if (_videoSt.videoTitle == tempSt.videoTitle)
+                        {
+                            Console.ForegroundColor = ConsoleColor.Red;
+                            Console.WriteLine("[Studios Notifier] Same Video detectet!");
+                            Console.ForegroundColor = ConsoleColor.White;
+                            return;
+                        }
                         DiscordEmbedBuilder messageEmbed = new DiscordEmbedBuilder()
                         {
                             Title = "Ein neues Video wurde hochgeladen!",
