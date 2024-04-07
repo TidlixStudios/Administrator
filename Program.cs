@@ -265,7 +265,7 @@ namespace Administrator
 
             DiscordChannel channel = guild.GetChannel(Config.youtubeNotifierChannelID);
 
-            var timer = new Timer(120000);
+            var timer = new Timer(60000);
             timer.Elapsed += async (sender, e) =>
             {
                 _videoYT = _YoutubeEngine.GetLatestVideo();
@@ -328,7 +328,7 @@ namespace Administrator
 
             DiscordChannel channel = guild.GetChannel(Config.studiosNotifierChannelID);
 
-            var timer = new Timer(120000);
+            var timer = new Timer(1800000);
             timer.Elapsed += async (sender, e) =>
             {
                 _videoSt = _StudiosEnige.GetLatestVideo();
